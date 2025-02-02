@@ -15,6 +15,7 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
 import { Experience, MemberDetails } from "../libs/api/@types/members";
+import ExperienceAddModal from "../pages/profileSetting/components/ExperieceAddModal";
 import { membersAPI } from "../libs/api/membersAPI";
 
 type ProfileLayoutProps = {
@@ -164,7 +165,7 @@ const UserExperience = ({ experienceData }: UserExperienceProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
       {/* Render each experience in its own grid */}
-      {experienceData?.map((items, i) => (
+      {experienceData && experienceData?.length > 0 ? (experienceData?.map((items, i) => (
         <div
           key={items.id}
           className="border p-4 rounded shadow-sm bg-white"
@@ -203,7 +204,13 @@ const UserExperience = ({ experienceData }: UserExperienceProps) => {
             </Descriptions.Item>
           </Descriptions>
         </div>
-      ))}
+      ))): (
+        // Show "Add Experience" button if no professional info data is found
+        <div className="flex flex-col items-center justify-center p-6 bg-white border rounded shadow-sm">
+          <p className="text-gray-500 mb-4">No professional experience found.</p>
+          <ExperienceAddModal />
+        </div>
+      )}
     </div>
   );
 };

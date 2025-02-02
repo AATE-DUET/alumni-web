@@ -37,7 +37,7 @@ const SignIn = () => {
           <Form
             onFinish={(values) =>
               mutate({
-                username: values.username,
+                username: values.username.toLowerCase(),
                 password: values.password,
               })
             }
@@ -46,13 +46,13 @@ const SignIn = () => {
             <Form.Item
               name="username"
               rules={[
-                { required: true, message: "Please input your Username!" },
+                { required: true, message: "Please input your Email!" },
               ]}
             >
               <Input
                 className="h-11"
                 prefix={<UserOutlined />}
-                placeholder="Username"
+                placeholder="Email"
               />
             </Form.Item>
             <Form.Item
