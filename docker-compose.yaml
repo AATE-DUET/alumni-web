@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  aated-app:
+    image: eshafik/aated:webfirst
+    ports:
+      - "${PORT:-3000}:80"  # Default to port 3000, can be overridden with the PORT environment variable
+    environment:
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - aated-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.15"
+          memory: 150M
+
+networks:
+  aated-network:
+    driver: bridge

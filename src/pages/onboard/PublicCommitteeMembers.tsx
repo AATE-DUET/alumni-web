@@ -1,13 +1,11 @@
 import { Avatar, Typography } from "antd";
 import { useQuery } from "react-query";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { publicCommitteeMemberAPI } from "../../libs/api/publicMember";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
-import { Navigation, Pagination } from "swiper/modules";
 
 const PublicCommitteeMembers = () => {
   // const [currentSlide, setCurrentSlide] = useState(0);
@@ -25,17 +23,17 @@ const PublicCommitteeMembers = () => {
         <Typography.Title className="text-center mt-0">
           Our Leadership Team
         </Typography.Title>
-        <Typography.Title level={5} className="text-center">
+        {/* <Typography.Title level={5} className="text-center">
           "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
           consectetur, adipisci velit..." "There is no one who loves pain
           itself, who seeks after it and wants to have it, simply because it is
           pain..."
-        </Typography.Title>
+        </Typography.Title> */}
       </div>
 
       {data?.data?.map(
         (members, i) =>
-          members?.committee_designation === "Secretary" && (
+          members?.committee_designation?.toLowerCase() === "president" && (
             <div
               key={i}
               className="flex flex-col items-center w-full justify-center"
@@ -51,43 +49,25 @@ const PublicCommitteeMembers = () => {
           )
       )}
 
-      <div className="flex flex-col items-center mt-1">
-        <Typography.Text className="text-center">
-          "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
-          consectetur, adipisci velit..." "There is no one who loves pain
-          itself, who seeks after it and wants to have it, simply because it is
-          pain..."
-        </Typography.Text>
-
-        <div className="w-96 mt-10 flex justify-center items-center">
-          <Swiper
-            slidesPerView={2}
-            spaceBetween={30}
-            loop={true}
-            pagination={{
-              clickable: true,
-            }}
-            navigation={true}
-            modules={[Pagination, Navigation]}
-            className="mySwiper flex justify-center items-center w-full"
-          >
-            {data?.data?.map((members, i) => (
-              <SwiperSlide key={i}>
-                <div
-                  key={i}
-                  className="bg-gray-200 w-44 flex justify-center items-center flex-col text-center p-5 rounded-lg"
-                >
-                  <Avatar src={members.profile_pic} size={100} />
-                  <Typography.Title level={5}>{members.name}</Typography.Title>
-                  <Typography.Text type="secondary">
-                    {members.committee_designation}
-                  </Typography.Text>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+<div className="w-full mt-10 flex justify-center items-center">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 w-full px-4 py-4">
+    {data?.data?.map((members, i) => (
+      members?.committee_designation?.toLowerCase() !== "president" && (
+        <div
+          key={i}
+          className="bg-gray-200 w-full sm:w-44 h-60 flex justify-center items-center flex-col text-center p-5 rounded-lg"
+        >
+          <Avatar src={members.profile_pic} size={100} />
+          <Typography.Title level={5}>{members.name}</Typography.Title>
+          <Typography.Text type="secondary">
+            {members.committee_designation}
+          </Typography.Text>
         </div>
-      </div>
+      )
+    ))}
+  </div>
+</div>
+
     </div>
   );
 };

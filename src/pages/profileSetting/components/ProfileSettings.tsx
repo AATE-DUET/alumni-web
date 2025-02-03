@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import AvatarUploader from "../../../container/AvaterUploader";
 import { UpdateProfilePayload } from "../../../libs/api/@types/profile";
 import { profileAPI } from "../../../libs/api/profileAPI";
+import { searchAPI } from "../../../libs/api/searchAPI";
 
 const ProfileSettings = () => {
   const { notification } = App.useApp();
@@ -30,6 +31,9 @@ const ProfileSettings = () => {
   const { data, isLoading: isProfileLoading } = useQuery(["user-profile"], () =>
     profileAPI.getProfileDetails()
   );
+  const { data: occupationData } = useQuery(["occupation-list"], () =>
+    searchAPI.getOccupationList()
+  );
 
   return (
     <Spin spinning={isProfileLoading}>
@@ -48,7 +52,7 @@ const ProfileSettings = () => {
             contact_details: data?.data?.contact_details,
             employment_status: data?.data?.employment_status,
             expertise_area: data?.data?.expertise_area,
-            occupation_type: data?.data?.occupation_type,
+            occupation_type: data?.data?.occupation_type?.id,
             professional_designation: data?.data?.professional_designation,
             unemployment_reasons: data?.data?.unemployment_reasons,
             username: data?.data?.username,
@@ -142,6 +146,20 @@ const ProfileSettings = () => {
               picker="year"
               className="w-full"
               placeholder="passing year"
+            />
+          </Form.Item>
+          <Form.Item 
+              name="occupation_type"
+              label="Occupation Type"
+              rules={[{ required: true, message: "Please select your occupation type" }]}
+          >
+            <Select
+              placeholder="Occupation"
+              options={occupationData?.data?.map(({ id, name }) => ({
+                key: id,
+                value: id,
+                label: name,
+              }))}
             />
           </Form.Item>
 

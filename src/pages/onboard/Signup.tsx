@@ -58,7 +58,7 @@ const SignUp = () => {
           onFinish={(values) => {
             mutate({
               name: values.name,
-              email: values.email,
+              email: values.email?.toLowerCase(),
               phone: values.phone,
               passing_year: values.passing_year,
               batch: values.batch,

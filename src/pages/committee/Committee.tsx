@@ -25,7 +25,7 @@ import PageHeader from "./components/PageHeader";
 const Committee = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isSuperUser } = useUserDetails();
+  const { isSuperUser} = useUserDetails();
   const queryClient = useQueryClient();
   const { notification } = App.useApp();
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ const Committee = () => {
         mutate={mutate}
       />
       <div className="h-[calc(100vh-100px)] flex flex-col justify-between p-3">
-        <div className="grid grid-cols-12 gap-2">
+        <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12">
             <PageHeader
               title={
@@ -91,24 +91,24 @@ const Committee = () => {
               hoverable
               key={index}
               onClick={() => navigate(`members/${items?.id}`)}
-              className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
+              className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-3"
             >
               <Typography.Title level={5} className="mt-0 mb-0">
                 {items?.name}
               </Typography.Title>
               <Typography.Paragraph type="secondary">
-                This committee Start at
-                <span className="text-black">{items?.start_date}</span> and End
+                This committee starts at
+                <span className="text-black">{items?.start_date}</span> and ends
                 at <span className="text-black">{items?.end_date}</span>
               </Typography.Paragraph>
               <Tag color={items?.is_active ? "green" : "red"}>
-                {items?.is_active ? "Active" : "Deactivate"}
+                {items?.is_active ? "Active" : "Inactive"}
               </Tag>
             </Card>
           ))}
         </div>
         <Pagination
-          className="flex justify-end mt-2"
+          className="flex justify-end mt-4"
           current={filter.filters?.page}
           total={committeeData?.meta_data?.count}
           defaultPageSize={committeeData?.meta_data?.page_size ?? 10}
@@ -128,6 +128,7 @@ type CreateCommitteeModalProps = {
   handelOk: () => void;
   mutate: UseMutateFunction<unknown, Error, CommitteePayload, unknown>;
 };
+
 const CreateCommitteeModal = ({
   form,
   isLoading,
@@ -145,6 +146,7 @@ const CreateCommitteeModal = ({
       okType="primary"
       confirmLoading={isLoading}
       centered
+      width="auto" // This ensures it’s responsive
     >
       <Form
         form={form}

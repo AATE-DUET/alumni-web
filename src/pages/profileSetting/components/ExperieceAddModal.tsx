@@ -1,5 +1,6 @@
 import { App, Button, Form, Modal } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { ExperiencePayload } from "../../../libs/api/@types/profile";
 import { profileAPI } from "../../../libs/api/profileAPI";
@@ -8,6 +9,7 @@ import ExperienceForm from "../container/ExperienceForm";
 const ExperienceAddModal = () => {
   const { notification } = App.useApp();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: mutateCreateExperience, isLoading: loadingAddExp } =
@@ -20,6 +22,7 @@ const ExperienceAddModal = () => {
           Modal.destroyAll();
           form?.resetFields();
           setIsModalOpen(false);
+          navigate("/profile-setting/experience");
         },
         onError: (error: Error) => {
           notification.error({ message: error.message });
@@ -44,7 +47,7 @@ const ExperienceAddModal = () => {
             mutateCreateExperience({
               company_name: values.company_name,
               designation: values.designation,
-              job_department: values.job_department,
+              job_department: values.job_department?.[0],
               job_location: values.job_location,
               responsibilities: values.responsibilities,
               start: values.start_date.format("YYYY-MM-DD"),
@@ -60,7 +63,16 @@ const ExperienceAddModal = () => {
           <ExperienceForm onCancel={() => setIsModalOpen(false)} />
         </Form>
       </Modal>
-      <Button onClick={() => setIsModalOpen(true)}>Add Experience</Button>
+      <Button
+        style={{
+          backgroundColor: "#2563EB",
+          borderColor: "#2563EB",
+          color: "white",
+        }}
+        onClick={() => setIsModalOpen(true)}
+      >
+        Add Experience
+      </Button>
     </>
   );
 };

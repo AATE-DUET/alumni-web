@@ -3,23 +3,34 @@ import styled from "styled-components";
 import { useUserDetails } from "../../container/RoleProvider";
 import ActiveMembers from "./component/ActiveMembers";
 import PendingMembers from "./component/PendingMembers";
+import { usePendingCount } from "../../config/hook/usePendingCount";
 
 const Members = () => {
-  const { isSuperUser } = useUserDetails();
+  const { isSuperUser, isAdmin, isModarator } = useUserDetails();
+  const pendingCount = usePendingCount();
 
-  return isSuperUser ? (
+  return isSuperUser || isAdmin || isModarator ? (
     <div className="p-3">
       <StyledTabs
         items={[
           {
             key: "active_members",
-            label: "Active Members",
+            label: "Members",
             children: <ActiveMembers />,
             className: "mb-0",
           },
           {
             key: "pending_members",
-            label: "Pending Request",
+            label: (
+              <span>
+                Pending Requests{" "}
+                {pendingCount > 0 && (
+                  <span className="ml-1 text-xs text-red-500">
+                    ({pendingCount})
+                  </span>
+                )}
+              </span>
+            ),
             children: <PendingMembers />,
             className: "mb-0",
           },

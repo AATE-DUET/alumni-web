@@ -27,12 +27,11 @@ const MemberSearch = ({ onClear, form }: MemberSearchProps) => {
   const { data: batchData } = useQuery(["batch-list"], () =>
     searchAPI.getBatchList()
   );
-
   const { data: occupationData } = useQuery(["occupation-list"], () =>
     searchAPI.getOccupationList()
   );
-
   const { filter, jobDept: jobDeptData } = useJobDeptSearch();
+
   const handleClear = useCallback(() => {
     form.setFieldsValue({
       name: undefined,
@@ -51,80 +50,69 @@ const MemberSearch = ({ onClear, form }: MemberSearchProps) => {
 
   return (
     <>
-      <div className="flex gap-2">
-        <div>
-          <Form.Item name="name">
-            <Input placeholder="Name" />
-          </Form.Item>
-
-          <Form.Item name="designation">
-            <Input placeholder="Designation" />
-          </Form.Item>
-
-          <Form.Item name="student_id">
-            <Input placeholder="Student id" />
-          </Form.Item>
-
-          <Form.Item name="location">
-            <Input placeholder="Location" />
-          </Form.Item>
-
-          <Form.Item name="company">
-            <Input placeholder="Company" />
-          </Form.Item>
-        </div>
-
-        <div>
-          <Form.Item name="employment_status">
-            <Select placeholder="Employee Status" options={employeeOptions} />
-          </Form.Item>
-
-          <Form.Item name="batch">
-            <Select
-              placeholder="Batch"
-              options={batchData?.data?.map(({ id, name }) => ({
-                key: id,
-                value: id?.toString(),
-                label: name,
-              }))}
-            />
-          </Form.Item>
-
-          <Form.Item name="occupation_type">
-            <Select
-              placeholder="Occupation"
-              options={occupationData?.data?.map(({ id, name }) => ({
-                key: id,
-                value: id?.toString(),
-                label: name,
-              }))}
-            />
-          </Form.Item>
-
-          <Form.Item name="job_department">
-            <Select
-              onSearch={filter.handleChangeJobDept}
-              showSearch
-              allowClear
-              placeholder="Job department"
-              options={jobDeptData?.data?.map(({ id, name }) => ({
-                key: id,
-                value: name?.toLowerCase(),
-                label: name,
-              }))}
-            />
-          </Form.Item>
-          <Form.Item name="skills">
-            <Input placeholder="Skills" />
-          </Form.Item>
-        </div>
+      <div className="flex flex-col gap-4 overflow-auto max-h-[calc(100vh-420px)]">
+        {/* Single column layout for mobile */}
+        <Form.Item name="name">
+          <Input placeholder="Name" />
+        </Form.Item>
+        <Form.Item name="designation">
+          <Input placeholder="Designation" />
+        </Form.Item>
+        <Form.Item name="student_id">
+          <Input placeholder="Student id" />
+        </Form.Item>
+        <Form.Item name="location">
+          <Input placeholder="Location" />
+        </Form.Item>
+        <Form.Item name="company">
+          <Input placeholder="Company" />
+        </Form.Item>
+        <Form.Item name="employment_status">
+          <Select placeholder="Employee Status" options={employeeOptions} />
+        </Form.Item>
+        <Form.Item name="batch">
+          <Select
+            placeholder="Batch"
+            options={batchData?.data?.map(({ id, name }) => ({
+              key: id,
+              value: id?.toString(),
+              label: name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item name="occupation_type">
+          <Select
+            placeholder="Occupation"
+            options={occupationData?.data?.map(({ id, name }) => ({
+              key: id,
+              value: id?.toString(),
+              label: name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item name="job_department">
+          <Select
+            onSearch={filter.handleChangeJobDept}
+            showSearch
+            allowClear
+            placeholder="Job department"
+            options={jobDeptData?.data?.map(({ id, name }) => ({
+              key: id,
+              value: id?.toString(),
+              label: name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item name="skills">
+          <Input placeholder="Skills" />
+        </Form.Item>
       </div>
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2 mt-4">
         <Button htmlType="reset" onClick={handleClear}>
-          Reset Field
+          Reset
         </Button>
         <Button type="primary" htmlType="submit" onClick={form.submit}>
-          Apply Filter
+          Apply
         </Button>
       </div>
     </>

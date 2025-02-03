@@ -9,14 +9,16 @@ import {
   Typography,
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 // import cover from "../../assets/cover.jpg";
 import { EditOutlined } from "@ant-design/icons";
-import { useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
 import { Experience, MemberDetails } from "../libs/api/@types/members";
 import { membersAPI } from "../libs/api/membersAPI";
+import ExperienceAddModal from "../pages/profileSetting/components/ExperieceAddModal";
+import UpdateExperienceForm from "../pages/profileSetting/container/UpdateExperienceForm";
 
 type ProfileLayoutProps = {
   isEditEnable?: boolean;
@@ -40,7 +42,7 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
     <Skeleton loading={isLoading}>
       <div className="flex justify-center pt-2">
         <Card className="shadow-2xl max-w-3xl">
-          <div className="flex gap-3 bg-yellow-400 p-4 rounded-lg">
+          <div className="flex gap-3 bg-blue-400 p-4 rounded-lg">
             <Avatar
               shape="square"
               size={80}
@@ -76,7 +78,7 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
                 isProfileEditEnable && "flex ml-auto"
               )}
               onClick={() => navigate("/profile-setting")}
-            />
+            >Edit</Button>
           </div>
           <StyledCard className="mt-2">
             <Tabs
@@ -87,11 +89,12 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
                   children: <BasicInfo profileData={memberData?.data} />,
                 },
                 {
-                  label: "Experiences",
+                  label: "Professional Info",
                   key: "experiences",
                   children: (
                     <UserExperience
                       experienceData={memberData?.data?.experiences}
+                      isExpEditable={isProfileEditEnable}
                     />
                   ),
                 },
@@ -113,7 +116,8 @@ const BasicInfo = ({ profileData }: BasicInfoProps) => {
   return (
     <Descriptions
       bordered
-      layout="vertical"
+      layout="horizontal"
+      column={1}
       items={[
         {
           label: "Student ID",
@@ -149,81 +153,96 @@ const BasicInfo = ({ profileData }: BasicInfoProps) => {
           children: profileData?.professional_designation,
         },
         {
+          label: "Occupation Type",
+          children: profileData?.occupation_type?.name,
+        },
+        {
           label: "Unemployment Reason",
           children: profileData?.unemployment_reasons,
         },
-      ]}
+      ].filter((item) => item.children)}
     />
   );
 };
 
 type UserExperienceProps = {
   experienceData?: Experience[];
+  isExpEditable?: boolean;
 };
-const UserExperience = ({ experienceData }: UserExperienceProps) => {
-  const [expID, setExpID] = useState(experienceData?.[0]?.id);
+const UserExperience = ({
+  experienceData,
+  isExpEditable,
+}: UserExperienceProps) => {
+  const [editModalVisible, setEditModalVisible] = useState<string | null>(null);
+  // const navigate = useNavigate();
   return (
-    <>
-      <div className="flex gap-2">
-        {experienceData?.map((exp, i) => (
-          <Button
-            size="small"
-            className="mb-2"
-            key={i}
-            onClick={() => setExpID(Number(exp?.id))}
-            type={expID === exp.id ? "primary" : "default"}
-          >
-            {i + 1}
-          </Button>
-        ))}
-      </div>
-      {experienceData?.map(
-        (items) =>
-          expID === items.id && (
-            <Descriptions
-              key={items?.id}
-              className="mb-2"
-              bordered
-              items={[
-                {
-                  label: "Company Name",
-                  children: items?.company_name,
-                  span: 24,
-                },
-                {
-                  label: "Designation",
-                  children: items?.designation,
-                  span: 24,
-                },
-                {
-                  label: "Department",
-                  children: items?.job_department?.name,
-                  span: 24,
-                },
-                {
-                  label: "Company Address",
-                  children: items?.job_location,
-                  span: 24,
-                },
-                {
-                  label: "Responsibilities",
-                  children: items?.responsibilities,
-                  span: 24,
-                },
-                {
-                  label: "Working Year",
-                  children: items?.working_years,
-                },
-                {
-                  label: "Start/End Date",
-                  children:
-                    items?.start + "  to  " + (items?.end ?? "Continuing"),
-                },
-              ]}
-            />
-          )
+    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+      {/* Render each experience in its own grid */}
+      {experienceData && experienceData?.length > 0 ? (experienceData?.map((items, i) => (
+        <div key={items.id} className="border p-4 rounded shadow-sm bg-white">
+          {/* Header with Experience Number */}
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-semibold">Experience {i + 1}</h3>
+            {/* Optional: Add an edit button or action here */}
+            {isExpEditable && (
+              <Button size="small" type="primary" onClick={() => setEditModalVisible(items && items?.id?.toString() || null)}>
+                Edit
+              </Button>
+            )}
+          </div>
+          {items && editModalVisible === items?.id?.toString() && (
+              <UpdateExperienceForm
+                slug={items.id.toString()}
+                open={true}
+                onCancel={() => setEditModalVisible(null)} // Close the modal
+              />
+            )}
+
+          {/* Descriptions for the Experience */}
+          <Descriptions 
+          bordered
+          layout="horizontal"
+          column={1}
+          items={[
+            {
+              label: "Company",
+              children: items?.company_name,
+            },
+            {
+              label: "Designation",
+              children: items?.designation,
+            },
+            {
+              label: "Department",
+              children: items?.job_department?.name,
+            },
+            {
+              label: "Address",
+              children: items?.job_location,
+            },
+            {
+              label: "Roles",
+              children: items?.responsibilities,
+            },
+            {
+              label: "Years",
+              children: items?.working_years,
+            },
+            {
+              label: "Period",
+              children: `${items?.start} to ${items?.end ?? "Present"}`,
+            },
+          ].filter((item) => item.children)}
+          />
+        </div>
+      ))): (
+        // Show "Add Experience" button if no professional info data is found
+        <div className="flex flex-col items-center justify-center p-6 bg-white border rounded shadow-sm">
+          <p className="text-gray-500 mb-4">No professional experience found.</p>
+          <ExperienceAddModal />
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

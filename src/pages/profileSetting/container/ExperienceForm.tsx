@@ -10,6 +10,7 @@ import {
   Select,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
+import { debounce } from "lodash";
 import { FC } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useJobDeptSearch } from "../../../config/hook/useJobDeptSearch";
@@ -21,13 +22,14 @@ type ExperienceFormProps = {
   updateLoading?: boolean;
   onCancel: () => void;
 };
+
 const ExperienceForm: FC<ExperienceFormProps> = ({
   isDisabled,
   deleteExperience,
   updateLoading,
   onCancel,
 }) => {
-  const { jobDept: jobDeptData, filter } = useJobDeptSearch();
+  const { jobDept: jobDeptData, filter, isLoading } = useJobDeptSearch();
   const { notification } = App.useApp();
   const queryClient = useQueryClient();
 
@@ -46,6 +48,11 @@ const ExperienceForm: FC<ExperienceFormProps> = ({
         },
       }
     );
+
+  const handleJobSearch = debounce(
+    (value: string) => filter.handleChangeJobDept(value),
+    1000
+  );
 
   return (
     <>
@@ -138,23 +145,27 @@ const ExperienceForm: FC<ExperienceFormProps> = ({
         rules={[
           {
             required: true,
-            message: "Please enter you department name",
+            message: "Please enter your department name",
           },
         ]}
       >
         <Select
           showSearch
-          onSearch={filter.handleChangeJobDept}
-          filterOption={(input, option) =>
-            (option?.label?.toLowerCase() ?? "").includes(input)
-          }
           options={jobDeptData?.data?.map(({ name }) => ({
             value: name,
             label: name,
           }))}
-          placeholder="Job Department"
+          placeholder="Select Job Department"
+          onSearch={handleJobSearch}
+          loading={isLoading}
+          mode="tags"
+          onChange={(value) => {
+            if (value.length > 1) value.pop();
+          }}
+          // tagRender={(value) => <div>{value.label}</div>}
         />
       </Form.Item>
+
       {isDisabled ? (
         <div className="flex justify-between gap-2">
           <Popconfirm

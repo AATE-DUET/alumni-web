@@ -17,6 +17,7 @@ export type MemberDetails = {
   username?: string;
   name?: string;
   email?: string;
+  role?: string;
   is_email_verified?: boolean;
   phone?: string;
   professional_designation?: string;
@@ -95,6 +96,7 @@ export interface MembersListParams {
   ordering?: number | string;
   name?: string;
   designation?: string;
+  phone?: string;
   batch?: string;
   occupation_type?: number | string;
   employment_status?: string;

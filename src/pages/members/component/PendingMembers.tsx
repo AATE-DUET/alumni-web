@@ -115,6 +115,7 @@ export default PendingMembers;
 type props = {
   name?: string;
   email?: string;
+  phone?: string;
   studentID?: string;
   passingYear?: number;
   batch?: Batch;

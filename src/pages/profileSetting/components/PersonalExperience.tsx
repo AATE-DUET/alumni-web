@@ -1,5 +1,5 @@
 import { EditOutlined } from "@ant-design/icons";
-import { List, Tooltip, Typography } from "antd";
+import { Button, List, Tooltip, Typography } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Experience } from "../../../libs/api/@types/profile";
@@ -39,22 +39,32 @@ const ExperienceItem = ({ exp }: { exp: Experience }) => {
         onCancel={() => setVisible(false)}
       />
       <div>
-        <Tooltip title="Edit Mode">
-          <EditOutlined
-            onClick={() => setVisible(true)}
-            className="absolute right-7"
-          />
+        <Tooltip title="Edit Experience">
+        <Button
+            type="link" // Use "link" type for a text-like button
+            icon={<EditOutlined />} // Optional: Include the EditOutlined icon
+            onClick={() => setVisible(true)} // Open the modal on click
+            className="absolute right-1"
+          >
+            Edit
+          </Button>
         </Tooltip>
         <Typography.Title className="mt-0" level={5}>
           {exp?.designation}
         </Typography.Title>
         <div>
-          {exp?.company_name} | {exp?.responsibilities}
+          <b>{exp?.company_name}</b> ({exp?.start} - {exp?.end || "Present"})
         </div>
         <div>
-          {exp?.start} To {exp?.end}
+          <b>Department: </b>{exp?.job_department?.name}
         </div>
-        <div>{exp?.working_years} Years of experience</div>
+        <div>
+          <b>Roles:</b> {exp?.responsibilities}
+        </div>
+        <div>
+          <b>Location:</b> {exp?.job_location}
+        </div>
+        <div>Duration: {exp?.working_years} Year/Years</div>
       </div>
     </>
   );

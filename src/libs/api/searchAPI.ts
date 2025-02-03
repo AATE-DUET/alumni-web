@@ -6,7 +6,7 @@ import { HttpAuthService } from "./httpService/httpAuth.service";
 class BatchAPI {
   constructor(private http: HttpAuthService) {}
   getBatchList() {
-    return this.http.get<GetLists>("api/v1/core/public/batches?limit=200");
+    return this.http.get<GetLists>("api/v1/core/public/batches/?limit=200");
   }
 
   getOccupationList() {

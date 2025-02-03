@@ -17,6 +17,8 @@ import SignIn from "../pages/onboard/Signin";
 import SignUp from "../pages/onboard/Signup";
 import BlogPost from "../pages/posts";
 import SettingsContainer from "../pages/profileSetting";
+import AboutUs from "../pages/onboard/AboutUs";
+import StatsDashboard from "../pages/stats";
 
 export const publicRoute = createBrowserRouter([
   {
@@ -32,6 +34,7 @@ export const publicRoute = createBrowserRouter([
       { path: "committee", element: <PublicCommitteeMembers /> },
       { path: "forgot-password", element: <OTPSenderForm /> },
       { path: "reset-password", element: <PasswordResetForm /> },
+      {path: "about-us", element: <AboutUs /> },
       {
         path: "*",
         element: (
@@ -62,6 +65,10 @@ export const protectedRouter = createBrowserRouter([
         element: <ProfileLayout isEditEnable />,
       },
       {
+        path: "stats",
+        element: <StatsDashboard />,
+      },
+      {
         path: "members",
         children: [
           { index: true, element: <Members /> },
@@ -86,7 +93,7 @@ export const protectedRouter = createBrowserRouter([
         ],
       },
       {
-        path: "profile-setting",
+        path: "profile-setting/:tab?",
         element: <SettingsContainer />,
       },
     ],

@@ -77,6 +77,7 @@ const BlogPost = () => {
                 placeholder="Search Post"
                 allowClear
                 onSearch={filter?.handleChangePosts}
+                className="w-[200px] border-gray-100 rounded-md"
               />
               <Select
                 placeholder="Select Category"

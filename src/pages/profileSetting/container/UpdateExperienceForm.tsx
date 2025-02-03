@@ -56,7 +56,7 @@ const UpdateExperienceForm = ({
               designation: values.designation,
               working_years: values.working_years,
               job_location: values.job_location,
-              job_department: values.job_department,
+              job_department: values.job_department?.[0],
               responsibilities: values.responsibilities,
               end: values.end_date
                 ? values.end_date.format("YYYY-MM-DD")

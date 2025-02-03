@@ -3,6 +3,7 @@ import {
   ReadOutlined,
   SettingOutlined,
   UsergroupAddOutlined,
+  DashboardFilled
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -28,11 +29,11 @@ const SideMenu = () => {
           disabled: true,
         },
         {
-          key: "posts",
-          title: "posts",
-          icon: <ReadOutlined />,
-          onClick: () => navigate("/posts"),
-          label: "Post",
+          key: "stats",
+          title: "Dashboard",
+          icon: <DashboardFilled />,
+          label: "Dashboard",
+          onClick: () => navigate("/stats"),
         },
         {
           key: "members",
@@ -41,7 +42,13 @@ const SideMenu = () => {
           label: "Members",
           onClick: () => navigate("/members"),
         },
-
+        {
+          key: "profile-setting",
+          title: "Setting",
+          icon: <SettingOutlined />,
+          onClick: () => navigate("profile-setting"),
+          label: "Profile Setting",
+        },
         {
           key: "committee",
           title: "Committee",
@@ -50,11 +57,11 @@ const SideMenu = () => {
           label: "Committee",
         },
         {
-          key: "profile-setting",
-          title: "Setting",
-          icon: <SettingOutlined />,
-          onClick: () => navigate("profile-setting"),
-          label: "Profile Setting",
+          key: "posts",
+          title: "posts",
+          icon: <ReadOutlined />,
+          onClick: () => navigate("/posts"),
+          label: "Post",
         },
       ]}
     />

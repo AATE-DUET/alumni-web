@@ -16,7 +16,7 @@ const SignIn = () => {
       onSuccess: ({ data: { refresh, access } }) => {
         authService.setToken(access);
         authService.setRefreshToken(refresh);
-        navigate("/posts");
+        navigate("/stats");
       },
       onError: () => {
         notification.error({ message: "Invalid username/password " });
@@ -37,7 +37,7 @@ const SignIn = () => {
           <Form
             onFinish={(values) =>
               mutate({
-                username: values.username,
+                username: values.username.toLowerCase(),
                 password: values.password,
               })
             }
@@ -52,7 +52,7 @@ const SignIn = () => {
               <Input
                 className="h-11"
                 prefix={<UserOutlined />}
-                placeholder="Username"
+                placeholder="Email"
               />
             </Form.Item>
             <Form.Item

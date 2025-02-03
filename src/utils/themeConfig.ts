@@ -2,7 +2,7 @@ import { ThemeConfig } from "antd";
 
 export const themeConfig: ThemeConfig = {
   token: {
-    colorPrimary: "#056608",
+    colorPrimary: "#1E90FF",
     borderRadius: 5,
   },
   components: {
@@ -14,17 +14,17 @@ export const themeConfig: ThemeConfig = {
       colorBorder: "transparent",
       defaultShadow: "3px 3px 3px 3px rgba(0.02, 0.02, 0.02, 0.05)",
       defaultHoverBorderColor: "transparent",
-      defaultHoverBg: "#E0FFFF",
+      defaultHoverBg: "#82CAFF",
       // colorPrimaryHover:"#90EE90"
-      textHoverBg: "#E0FFFF",
+      textHoverBg: "#82CAFF",
     },
     Select: {
       controlHeight: 38,
     },
     Menu: {
-      itemSelectedBg: "#056608",
+      itemSelectedBg: "#0041C2",
       colorPrimary: "white",
-      itemHoverBg: "#E0FFFF",
+      itemHoverBg: "#82CAFF",
     },
   },
 };

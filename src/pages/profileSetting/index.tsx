@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Card, Typography } from "antd";
-import { Brain, Lock, Settings } from "lucide-react";
+import { Briefcase, Lock, User } from "lucide-react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
 import { useMatchMedia } from "../../components/useMatchMedia";
@@ -22,25 +23,28 @@ export const StyledCard = styled(Card)`
   }
 `;
 const ProfileContainer = () => {
-  const [settingItem, setSettingItem] = useState("basic_profile");
+  // const [settingItem, setSettingItem] = useState("basic_profile");
+  // const isMobile = useMatchMedia();
+  const { tab } = useParams(); // Extract the tab parameter from the URL
+  const [settingItem, setSettingItem] = useState(tab || "basic_profile"); // Default to "basic_profile" if no tab is provided
   const isMobile = useMatchMedia();
 
   const settingsItems: { icon: React.ReactNode; title: string; key: string }[] =
     [
       {
-        icon: <Settings size={16} />,
+        icon: <User size={16} />,
         title: "Basic Profile",
         key: "basic_profile",
+      },
+      {
+        icon: <Briefcase size={16} />,
+        title: "Experiences",
+        key: "experience",
       },
       {
         icon: <Lock size={16} />,
         title: "Security",
         key: "security",
-      },
-      {
-        icon: <Brain size={16} />,
-        title: "Experience",
-        key: "experience",
       },
     ];
 

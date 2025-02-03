@@ -3,12 +3,14 @@ import { createContext, FC, ReactNode, useContext } from "react";
 interface SuperUserContext {
   isSuperUser?: boolean;
   isModarator?: boolean;
+  isAdmin?: boolean;
   userID?: string | number;
 }
 
 const RoleContext = createContext<SuperUserContext>({
   isSuperUser: false,
   isModarator: false,
+  isAdmin: false,
   userID: "",
 });
 export const useUserDetails = () => useContext(RoleContext);
@@ -25,6 +27,8 @@ const ProfileProvider: FC<FeaturesProviderProps> = (props) => {
       value={{
         userID: userProfile?.id,
         isSuperUser: userProfile?.is_superuser,
+        isAdmin: userProfile?.role === 'admin',
+        isModarator: userProfile?.role == 'moderator',
       }}
     >
       {props.children}

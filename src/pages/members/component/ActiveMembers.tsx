@@ -41,7 +41,7 @@ type FilterFieldType = {
 };
 
 const ActiveMembers = () => {
-  const { isSuperUser } = useUserDetails();
+  const { isSuperUser, isAdmin } = useUserDetails();
   const { notification } = App.useApp();
 
   const navigate = useNavigate();
@@ -93,95 +93,95 @@ const ActiveMembers = () => {
                         {user.name}
                         <Tooltip title="Passing Year">
                           <Tag className="ml-2" color="blue">
-                            {user.passing_year}
+                            {user.batch?.name} Batch
                           </Tag>
                         </Tooltip>
                       </div>
                     }
-                    description={user.email}
+                    description={user.professional_designation}
                     extra={
                       <Dropdown
-                        menu={{
-                          items: [
-                            {
-                              key: "admin",
-                              onClick: (e) => e?.domEvent?.stopPropagation(),
-                              label: (
-                                <Popconfirm
-                                  title="Make Admin"
-                                  description="Are you sure you want to change member role as admin?"
-                                  onConfirm={(e) => {
-                                    e?.stopPropagation(),
-                                      mutate({
-                                        role: "admin",
-                                        user_id: user.id,
-                                      });
-                                  }}
-                                  okText="Yes"
-                                  cancelText="No"
-                                  okType="danger"
-                                >
-                                  Make Admin
-                                </Popconfirm>
-                              ),
-                            },
-                            {
-                              key: "member",
-                              onClick: (e) => e?.domEvent?.stopPropagation(),
-                              label: (
-                                <Popconfirm
-                                  title="Member"
-                                  description="Are you sure you want to change member role as member?"
-                                  onConfirm={(e) => {
-                                    e?.stopPropagation(),
-                                      mutate({
-                                        role: "member",
-                                        user_id: user?.id,
-                                      });
-                                  }}
-                                  okText="Yes"
-                                  cancelText="No"
-                                  okType="danger"
-                                >
-                                  Make Member
-                                </Popconfirm>
-                              ),
-                            },
-                            {
-                              key: "moderator",
-                              onClick: (e) => e?.domEvent?.stopPropagation(),
-                              label: (
-                                <Popconfirm
-                                  title="Moderator"
-                                  description="Are you sure you want to change member role as moderator?"
-                                  onConfirm={(e) => {
-                                    e?.stopPropagation(),
-                                      mutate({
-                                        role: "moderator",
-                                        user_id: user?.id,
-                                      });
-                                  }}
-                                  okText="Yes"
-                                  cancelText="No"
-                                  okType="danger"
-                                >
-                                  Make Moderator
-                                </Popconfirm>
-                              ),
-                            },
-                          ],
-                        }}
-                      >
-                        <Button
-                          className={twMerge("hidden", isSuperUser && "block")}
-                          type="text"
-                          icon={<Settings2 size={16} />}
-                          onClick={(e) => e.stopPropagation()}
-                          loading={
-                            user.id === variables?.user_id && memberRoleLoading
-                          }
-                        />
-                      </Dropdown>
+                      menu={{
+                        items: [
+                          {
+                            key: "admin",
+                            onClick: (e: any) => e?.domEvent?.stopPropagation(),
+                            label: (
+                              <Popconfirm
+                                title="Make Admin"
+                                description="Are you sure you want to change member role as admin?"
+                                onConfirm={(e) => {
+                                  e?.stopPropagation();
+                                  mutate({
+                                    role: "admin",
+                                    user_id: user.id,
+                                  });
+                                }}
+                                okText="Yes"
+                                cancelText="No"
+                                okType="danger"
+                              >
+                                Make Admin
+                              </Popconfirm>
+                            ),
+                          },
+                          {
+                            key: "member",
+                            onClick: (e: any) => e?.domEvent?.stopPropagation(),
+                            label: (
+                              <Popconfirm
+                                title="Member"
+                                description="Are you sure you want to change member role as member?"
+                                onConfirm={(e) => {
+                                  e?.stopPropagation();
+                                  mutate({
+                                    role: "member",
+                                    user_id: user?.id,
+                                  });
+                                }}
+                                okText="Yes"
+                                cancelText="No"
+                                okType="danger"
+                              >
+                                Make Member
+                              </Popconfirm>
+                            ),
+                          },
+                          {
+                            key: "moderator",
+                            onClick: (e: any) => e?.domEvent?.stopPropagation(),
+                            label: (
+                              <Popconfirm
+                                title="Moderator"
+                                description="Are you sure you want to change member role as moderator?"
+                                onConfirm={(e) => {
+                                  e?.stopPropagation();
+                                  mutate({
+                                    role: "moderator",
+                                    user_id: user?.id,
+                                  });
+                                }}
+                                okText="Yes"
+                                cancelText="No"
+                                okType="danger"
+                              >
+                                Make Moderator
+                              </Popconfirm>
+                            ),
+                          },
+                        ]
+                        .filter((item) => item.key !== user.role) // Filter out the current user's role
+                      }}
+                    >
+                      <Button
+                        className={twMerge("hidden", (isSuperUser || isAdmin) && "block")}
+                        type="text"
+                        icon={<Settings2 size={16} />}
+                        onClick={(e) => e.stopPropagation()}
+                        loading={user.id === variables?.user_id && memberRoleLoading}
+                      />
+                    </Dropdown>
+
                     }
                   />
                 </Card>
@@ -215,6 +215,7 @@ const MemberFilter = ({ memberFilter }: props) => {
   const [filters, setFilter] = useState(false);
 
   const serializePayload = (values: FilterFieldType) => {
+    // Apply the filter logic here
     memberFilter.handleChangeName(values.name);
     memberFilter.handleChangeCompany(values.company);
     memberFilter.handleChangeDesignation(values.designation);
@@ -225,21 +226,35 @@ const MemberFilter = ({ memberFilter }: props) => {
     memberFilter.handleChangeOrdering(values.batch);
     memberFilter.handleChangeSkills(values.skills);
     memberFilter.handleChangeEmployeeStatus(values.employment_status);
+
+    // Close the Popover after applying the filter
+    setFilter(false);
   };
+
   return (
     <Form size="large" form={form} onFinish={serializePayload} layout="inline">
       <Popover
-        title="Member Search"
+        title="Search & Filter"
         open={filters}
-        placement="rightTop"
+        placement="bottom" // Ensure the Popover appears below the filter icon
         onOpenChange={(open) => setFilter(open)}
+        getPopupContainer={(triggerNode) => {
+          const parentNode = triggerNode.parentNode;
+          return parentNode instanceof HTMLElement ? parentNode : document.body;
+        }}
         content={
-          <MemberSearch
-            form={form}
-            onClear={() => memberFilter.clearFilter()}
-          />
+          <div className="min-w-[300px] sm:min-w-[400px] max-w-[90vw] overflow-auto">
+            <MemberSearch
+              form={form}
+              onClear={() => {
+                memberFilter.clearFilter();
+                setFilter(false); // Close the popover after clearing
+              }}
+            />
+          </div>
         }
-        trigger={"click"}
+        trigger="click"
+        overlayClassName="popover-overlay"
       >
         <Button
           title="Member Filter"
@@ -249,7 +264,7 @@ const MemberFilter = ({ memberFilter }: props) => {
           className="flex items-center justify-center mb-2"
           size="middle"
         >
-          {memberFilter?.filters && "Filter Applied"}
+          {memberFilter?.filters && "Filtered"}
         </Button>
       </Popover>
     </Form>
