@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import { Experience } from "../../../libs/api/@types/profile";
 import { profileAPI } from "../../../libs/api/profileAPI";
 import UpdateExperienceForm from "../container/UpdateExperienceForm";
+import TextAlignment from "../../../components/textAlignment";
 
 const SeeExperience = () => {
   const { data: experiencesData, isLoading } = useQuery(
@@ -59,12 +60,12 @@ const ExperienceItem = ({ exp }: { exp: Experience }) => {
           <b>Department: </b>{exp?.job_department?.name}
         </div>
         <div>
-          <b>Roles:</b> {exp?.responsibilities}
+          <TextAlignment responsibilities={exp?.responsibilities} title="Roles" />
         </div>
         <div>
           <b>Location:</b> {exp?.job_location}
         </div>
-        <div>Duration: {exp?.working_years} Year/Years</div>
+        {/* <div><b>Duration:</b> {exp?.working_years} Year/Years</div> */}
       </div>
     </>
   );

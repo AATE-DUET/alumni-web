@@ -6,7 +6,7 @@ import {
   Skeleton,
   Tabs,
   Tag,
-  Typography,
+  Typography
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
@@ -17,6 +17,7 @@ import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
 import { Experience, MemberDetails } from "../libs/api/@types/members";
 import { membersAPI } from "../libs/api/membersAPI";
+import TextAlignment from "../components/textAlignment";
 import ExperienceAddModal from "../pages/profileSetting/components/ExperieceAddModal";
 import UpdateExperienceForm from "../pages/profileSetting/container/UpdateExperienceForm";
 
@@ -42,7 +43,7 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
     <Skeleton loading={isLoading}>
       <div className="flex justify-center pt-2">
         <Card className="shadow-2xl max-w-3xl">
-          <div className="flex gap-3 bg-blue-400 p-4 rounded-lg">
+          <div className="flex gap-3 bg-blue-400 p-4 rounded-lg items-start">
             <Avatar
               shape="square"
               size={80}
@@ -50,21 +51,22 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
               className="shadow-lg"
             />
             <div className="flex-1">
-              <Typography.Title level={5} className="mt-0 mb-0">
+              <Typography.Title level={5} className="m-0">
                 {memberData?.data?.name}
               </Typography.Title>
               <Descriptions
                 items={[
                   {
-                    label: "Email",
+                    // label: "Email",
                     children: memberData?.data?.email,
                     span: 24,
-                    className: "mb-0 pb-0 truncate",
+                    className: "m-0",
                   },
                   {
-                    label: "Phone",
+                    label: "Cell",
                     span: 24,
                     children: memberData?.data?.phone ?? null,
+                    className: "m-0 mt-0",
                   },
                 ]}
               />
@@ -199,7 +201,7 @@ const UserExperience = ({
             )}
 
           {/* Descriptions for the Experience */}
-          <Descriptions 
+          {/* <Descriptions 
           bordered
           layout="horizontal"
           column={1}
@@ -233,13 +235,44 @@ const UserExperience = ({
               children: `${items?.start} to ${items?.end ?? "Present"}`,
             },
           ].filter((item) => item.children)}
-          />
+          /> */}
+          <div>
+            <div>
+            <Typography.Title className="mt-0" level={5}>
+              {items?.designation}
+            </Typography.Title>
+            </div>
+            <div>
+              <Typography.Text className="mt-0">
+              <b>{items?.company_name}</b> ({items?.start} - {items?.end || "Present"})
+              </Typography.Text>
+            </div>
+            <div>
+            <Typography.Text>
+              <b>Location:</b> {items?.job_location}
+            </Typography.Text>
+            </div>
+            <div>
+            <Typography.Text>
+              <b>Department: </b>{items?.job_department?.name}
+            </Typography.Text>
+            </div>
+            <div>
+            <div>
+              <TextAlignment responsibilities={items?.responsibilities} title="Roles" />
+            </div>
+            </div>
+            
+            {/* <div>
+            <Typography.Text><b>Duration:</b> {items?.working_years} Year/Years</Typography.Text>
+            </div> */}
+          </div>
         </div>
       ))): (
         // Show "Add Experience" button if no professional info data is found
         <div className="flex flex-col items-center justify-center p-6 bg-white border rounded shadow-sm">
           <p className="text-gray-500 mb-4">No professional experience found.</p>
-          <ExperienceAddModal />
+          {isExpEditable && <ExperienceAddModal />}
         </div>
       )}
     </div>

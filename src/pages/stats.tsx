@@ -2,7 +2,6 @@ import { Card, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { statsAPI } from "../libs/api/statsAPI";
-import { StatsData } from "../libs/api/@types/stats";
 
 // Define the paths for each stat
 const STAT_PATHS = {
