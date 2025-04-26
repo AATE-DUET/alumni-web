@@ -7,7 +7,10 @@ import { usePendingCount } from "../../config/hook/usePendingCount";
 
 const Members = () => {
   const { isSuperUser, isAdmin, isModarator } = useUserDetails();
-  const pendingCount = usePendingCount();
+  let pendingCount = 0;
+  if (isSuperUser || isAdmin || isModarator){
+    pendingCount = usePendingCount();
+  }
 
   return isSuperUser || isAdmin || isModarator ? (
     <div className="p-3">

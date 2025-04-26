@@ -19,7 +19,7 @@ const SignIn = () => {
         navigate("/stats");
       },
       onError: () => {
-        notification.error({ message: "Invalid username/password " });
+        notification.error({ message: "Invalid username/password or your request is pending for approval!" });
       },
     }
   );

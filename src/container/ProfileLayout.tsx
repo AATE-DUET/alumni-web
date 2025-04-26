@@ -6,18 +6,18 @@ import {
   Skeleton,
   Tabs,
   Tag,
-  Typography
+  Typography,
 } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 // import cover from "../../assets/cover.jpg";
 import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
+import TextAlignment from "../components/textAlignment";
 import { Experience, MemberDetails } from "../libs/api/@types/members";
 import { membersAPI } from "../libs/api/membersAPI";
-import TextAlignment from "../components/textAlignment";
 import ExperienceAddModal from "../pages/profileSetting/components/ExperieceAddModal";
 import UpdateExperienceForm from "../pages/profileSetting/container/UpdateExperienceForm";
 
@@ -43,7 +43,7 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
     <Skeleton loading={isLoading}>
       <div className="flex justify-center pt-2">
         <Card className="shadow-2xl max-w-3xl">
-          <div className="flex gap-3 bg-blue-400 p-4 rounded-lg items-start">
+          <div className="flex gap-2 bg-blue-400 p-3 rounded-lg items-start">
             <Avatar
               shape="square"
               size={80}
@@ -51,22 +51,22 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
               className="shadow-lg"
             />
             <div className="flex-1">
-              <Typography.Title level={5} className="m-0">
+              <Typography.Title level={5} className="m-0 truncate">
                 {memberData?.data?.name}
               </Typography.Title>
               <Descriptions
                 items={[
                   {
-                    // label: "Email",
+                    label: "",
                     children: memberData?.data?.email,
                     span: 24,
-                    className: "m-0",
+                    className: "m-0 p-0 mt-0 truncate",
                   },
                   {
-                    label: "Cell",
+                    label: "",
                     span: 24,
                     children: memberData?.data?.phone ?? null,
-                    className: "m-0 mt-0",
+                    className: "m-0 mt-0 truncate",
                   },
                 ]}
               />
@@ -80,7 +80,9 @@ const ProfileLayout = ({ isEditEnable }: ProfileLayoutProps) => {
                 isProfileEditEnable && "flex ml-auto"
               )}
               onClick={() => navigate("/profile-setting")}
-            >Edit</Button>
+            >
+              Edit
+            </Button>
           </div>
           <StyledCard className="mt-2">
             <Tabs
@@ -148,11 +150,21 @@ const BasicInfo = ({ profileData }: BasicInfoProps) => {
         },
         {
           label: "Expertise Area",
-          children: profileData?.expertise_area,
+          children: (
+            <Typography.Text className="break-normal">
+              {profileData?.expertise_area}
+            </Typography.Text>
+          ),
         },
         {
           label: "Professional Designation",
-          children: profileData?.professional_designation,
+          children: (
+            <div className="break-words md:break-normal">
+              <Typography.Text>
+                {profileData?.professional_designation}
+              </Typography.Text>
+            </div>
+          ),
         },
         {
           label: "Occupation Type",
@@ -180,19 +192,28 @@ const UserExperience = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
       {/* Render each experience in its own grid */}
-      {experienceData && experienceData?.length > 0 ? (experienceData?.map((items, i) => (
-        <div key={items.id} className="border p-4 rounded shadow-sm bg-white">
-          {/* Header with Experience Number */}
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-semibold">Experience {i + 1}</h3>
-            {/* Optional: Add an edit button or action here */}
-            {isExpEditable && (
-              <Button size="small" type="primary" onClick={() => setEditModalVisible(items && items?.id?.toString() || null)}>
-                Edit
-              </Button>
-            )}
-          </div>
-          {items && editModalVisible === items?.id?.toString() && (
+      {experienceData && experienceData?.length > 0 ? (
+        experienceData?.map((items, i) => (
+          <div key={items.id} className="border p-4 rounded shadow-sm bg-white">
+            {/* Header with Experience Number */}
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold">Experience {i + 1}</h3>
+              {/* Optional: Add an edit button or action here */}
+              {isExpEditable && (
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() =>
+                    setEditModalVisible(
+                      (items && items?.id?.toString()) || null
+                    )
+                  }
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
+            {items && editModalVisible === items?.id?.toString() && (
               <UpdateExperienceForm
                 slug={items.id.toString()}
                 open={true}
@@ -200,8 +221,8 @@ const UserExperience = ({
               />
             )}
 
-          {/* Descriptions for the Experience */}
-          {/* <Descriptions 
+            {/* Descriptions for the Experience */}
+            {/* <Descriptions 
           bordered
           layout="horizontal"
           column={1}
@@ -236,42 +257,50 @@ const UserExperience = ({
             },
           ].filter((item) => item.children)}
           /> */}
-          <div>
             <div>
-            <Typography.Title className="mt-0" level={5}>
-              {items?.designation}
-            </Typography.Title>
-            </div>
-            <div>
-              <Typography.Text className="mt-0">
-              <b>{items?.company_name}</b> ({items?.start} - {items?.end || "Present"})
-              </Typography.Text>
-            </div>
-            <div>
-            <Typography.Text>
-              <b>Location:</b> {items?.job_location}
-            </Typography.Text>
-            </div>
-            <div>
-            <Typography.Text>
-              <b>Department: </b>{items?.job_department?.name}
-            </Typography.Text>
-            </div>
-            <div>
-            <div>
-              <TextAlignment responsibilities={items?.responsibilities} title="Roles" />
-            </div>
-            </div>
-            
-            {/* <div>
+              <div>
+                <Typography.Title className="mt-0" level={5}>
+                  {items?.designation}
+                </Typography.Title>
+              </div>
+              <div>
+                <Typography.Text className="mt-0">
+                  <b>{items?.company_name}</b> ({items?.start} -{" "}
+                  {items?.end || "Present"})
+                </Typography.Text>
+              </div>
+              <div>
+                <Typography.Text>
+                  <b>Location:</b> {items?.job_location}
+                </Typography.Text>
+              </div>
+              <div>
+                <Typography.Text>
+                  <b>Department: </b>
+                  {items?.job_department?.name}
+                </Typography.Text>
+              </div>
+              <div>
+                <div>
+                  <TextAlignment
+                    responsibilities={items?.responsibilities}
+                    title="Roles"
+                  />
+                </div>
+              </div>
+
+              {/* <div>
             <Typography.Text><b>Duration:</b> {items?.working_years} Year/Years</Typography.Text>
             </div> */}
+            </div>
           </div>
-        </div>
-      ))): (
+        ))
+      ) : (
         // Show "Add Experience" button if no professional info data is found
         <div className="flex flex-col items-center justify-center p-6 bg-white border rounded shadow-sm">
-          <p className="text-gray-500 mb-4">No professional experience found.</p>
+          <p className="text-gray-500 mb-4">
+            No professional experience found.
+          </p>
           {isExpEditable && <ExperienceAddModal />}
         </div>
       )}

@@ -34,13 +34,17 @@ const CommitteeMembers = () => {
   const { isSuperUser } = useUserDetails();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { data: CommitteeName } = useQuery(["committee-details"], () =>
+  const {
+    data: CommitteeName,
+    isLoading: isLoading,
+  } = useQuery(["committee-details"], () =>
     committeeAPI.getCommitteeDetails(slag as string)
   );
+  
 
-  const { data, isLoading } = useQuery(["committeeMember-details"], () =>
-    committeeAPI.getCommitteeMembersList(slag as string)
-  );
+  // const { data, isLoading } = useQuery(["committeeMember-details"], () =>
+  //   committeeAPI.getCommitteeMembersList(slag as string)
+  // );
 
   const { mutate } = useMutation(
     (id?: string | number) => committeeAPI?.removeCommitteeMember(id),
@@ -199,14 +203,14 @@ const CommitteeMembers = () => {
                   optionFilterProp="children"
                   showSearch
                   allowClear
-                  filterOption={(input, option) =>
-                    (option?.label?.toLowerCase() ?? "").includes(input)
-                  }
                   loading={loadingMembers}
-                  options={ActiveMemberData?.data?.map(({ id, name }) => ({
-                    value: id,
-                    label: name,
-                  }))}
+                  options={
+                    ActiveMemberData?.data?.map(({ id, name }) => ({
+                      value: id,
+                      label: name,
+                    })) || []
+                  }
+                  filterOption={false}
                   placeholder="Members"
                 />
               </Form.Item>
@@ -226,14 +230,9 @@ const CommitteeMembers = () => {
           <Table
             bordered
             rowKey={(key) => key.id?.toString() ?? ""}
-            dataSource={data?.data || []}
+            dataSource={CommitteeName?.data?.members || []}
             columns={column}
-            pagination={{
-              total: data?.meta_data?.count,
-              pageSize: data?.meta_data?.page_size,
-              onChange: filter.handleChangePage,
-              showTotal: () => `Total: ${data?.meta_data?.count} User`,
-            }}
+            pagination={false}
           />
         </div>
       </Spin>

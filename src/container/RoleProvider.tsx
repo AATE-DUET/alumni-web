@@ -26,7 +26,7 @@ const ProfileProvider: FC<FeaturesProviderProps> = (props) => {
     <RoleContext.Provider
       value={{
         userID: userProfile?.id,
-        isSuperUser: userProfile?.is_superuser,
+        isSuperUser: userProfile?.role === 'admin',
         isAdmin: userProfile?.role === 'admin',
         isModarator: userProfile?.role == 'moderator',
       }}
